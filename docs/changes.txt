@@ -1,4 +1,65 @@
-* changes v6.0.0 -> v6.0.x
+* changes v6.1.1 -> v6.x.x
+
+##
+## Algorithms
+##
+
+- Added hash-mode: Bitwarden
+- Added hash-mode: BestCrypt v3 Volume Encryption
+- Added hash-mode: Apple iWork
+- Added hash-mode: AxCrypt 2 AES-128
+- Added hash-mode: AxCrypt 2 AES-256
+- Added hash-mode: PKCS#8 Private Keys
+- Added hash-mode: RAR3-p (Compressed)
+- Added hash-mode: RAR3-p (Uncompressed)
+- Added hash-mode: RSA/DSA/EC/OPENSSH Private Keys
+- Added hash-mode: sha1(sha1($pass).$salt)
+
+##
+## Bugs
+##
+
+- Fixed too early execution of some module functions which could make use of non-final values opts_type and opti_type
+- Fixed internal access on module option attribute OPTS_TYPE_SUGGEST_KG with the result that it was unused
+- Fixed race condition resulting in out of memory error on startup if multiple hashcat instances are started at the same time
+- Fixed unexpected non-unique salts in multi-hash cracking in Bitcoin/Litecoin wallet.dat module which lead to false negatives
+- Fixed rare case of misalignment of the status prompt when other user warnings are shown within the hashcat output
+- Fixed password reassembling for cracked hashes on host for slow hashes in optimized mode that are longer than 32 characters
+- Fixed incorrect maximum password length support for -m 400 in optimized mode (reduced from 55 to 39)
+
+##
+## Improvements
+##
+
+- Apple Keychain: Notify the user about the risk of collisions / false positives
+- CUDA Backend: Give detailed warning if either the NVIDIA CUDA or the NVIDIA RTC library cannot be initialized
+- CUDA Backend: Do not warn about missing CUDA SDK installation if --backend-ignore-cuda is used
+- CUDA Backend: Use blocking events to avoid 100% CPU core usage (per GPU)
+- RAR3 Kernels: Improved loop code, improving performance by 23%
+- Startup time: Improved the startup time by avoiding some time intensive operations for skipped devices
+
+##
+## Technical
+##
+
+- Documentation: Added 3rd party licenses to docs/license_libs
+- Module Structure: Add 3rd party library hook management functions. This also requires an update to all existing module_init()
+- Hash-Mode 11600 (7-Zip): Improved memory handling (alloc and free) for the hook function
+- Hash-Mode 13200 (AxCrypt): Changed the name to AxCrypt 1 to avoid confusion
+- Hash-Mode 13300 (AxCrypt in-memory SHA1): Changed the name to AxCrypt 1 in-memory SHA1
+- OpenCL Runtime: Switched default OpenCL device type on macOS from GPU to CPU. Use -D 2 to enable GPU devices.
+- Unit tests: Added Python 3 support for all of the Python code in our test framework
+- Unit tests: Fixed the packaging of test (-p) feature
+
+* changes v6.1.0 -> v6.1.1
+
+##
+## Bugs
+##
+
+- Fixed unresolvable relative paths in hashcat.log
+
+* changes v6.0.0 -> v6.1.0
 
 ##
 ## Algorithms
@@ -24,6 +85,9 @@
 
 - Compile macOS: Fixed makefile target 'clean' to correctly remove *.dSYM folders
 - Compile ZLIB: Fixed makefile include paths in case USE_SYSTEM_ZLIB is used
+- Hcchr Files: Renamed some .charset files into .hcchr files
+- Hash-Mode 21200 (md5(sha1($salt).md5($pass))): Improved speed by using pre-computed SHA1
+- OpenCL Devices: Utilize PCI domain to improve alias device detection
 - OpenCL Kernels: Added datatypes to literals of enum costants
 - OpenCL Kernels: Added pure kernels for hash-mode 600 (BLAKE2b-512)
 - OpenCL Runtime: Add some unstable warnings for some SHA512 based algorithms on AMD GPU on macOS

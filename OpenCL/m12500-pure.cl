@@ -17,12 +17,6 @@
 
 #define ROUNDS 0x40000
 
-typedef struct pbkdf2_sha1
-{
-  u32 salt_buf[64];
-
-} pbkdf2_sha1_t;
-
 typedef struct rar3_tmp
 {
   u32 dgst[5];
@@ -755,7 +749,7 @@ DECLSPEC void sha1_update_rar29 (sha1_ctx_t *ctx, u32 *w, const int len)
   }
 }
 
-KERNEL_FQ void m12500_init (KERN_ATTR_TMPS_ESALT (rar3_tmp_t, pbkdf2_sha1_t))
+KERNEL_FQ void m12500_init (KERN_ATTR_TMPS (rar3_tmp_t))
 {
   /**
    * base
@@ -810,8 +804,8 @@ KERNEL_FQ void m12500_init (KERN_ATTR_TMPS_ESALT (rar3_tmp_t, pbkdf2_sha1_t))
 
   u32 salt_buf[3];
 
-  salt_buf[0] = hc_swap32_S (salt_bufs[salt_pos].salt_buf[0]); // swap needed due to -O kernel
-  salt_buf[1] = hc_swap32_S (salt_bufs[salt_pos].salt_buf[1]);
+  salt_buf[0] = hc_swap32_S (salt_bufs[SALT_POS].salt_buf[0]); // swap needed due to -O kernel
+  salt_buf[1] = hc_swap32_S (salt_bufs[SALT_POS].salt_buf[1]);
   salt_buf[2] = 0;
 
   // switch buffer by offset (can only be 0 or 2 because of utf16):
@@ -843,7 +837,7 @@ KERNEL_FQ void m12500_init (KERN_ATTR_TMPS_ESALT (rar3_tmp_t, pbkdf2_sha1_t))
   tmps[gid].iv[3] = 0;
 }
 
-KERNEL_FQ void m12500_loop (KERN_ATTR_TMPS_ESALT (rar3_tmp_t, pbkdf2_sha1_t))
+KERNEL_FQ void m12500_loop (KERN_ATTR_TMPS (rar3_tmp_t))
 {
   const u64 gid = get_global_id (0);
 
@@ -957,7 +951,7 @@ KERNEL_FQ void m12500_loop (KERN_ATTR_TMPS_ESALT (rar3_tmp_t, pbkdf2_sha1_t))
   }
 }
 
-KERNEL_FQ void m12500_comp (KERN_ATTR_TMPS_ESALT (rar3_tmp_t, pbkdf2_sha1_t))
+KERNEL_FQ void m12500_comp (KERN_ATTR_TMPS (rar3_tmp_t))
 {
   const u64 gid = get_global_id (0);
   const u64 lid = get_local_id (0);
@@ -1073,10 +1067,10 @@ KERNEL_FQ void m12500_comp (KERN_ATTR_TMPS_ESALT (rar3_tmp_t, pbkdf2_sha1_t))
 
   u32 data[4];
 
-  data[0] = salt_bufs[salt_pos].salt_buf[2];
-  data[1] = salt_bufs[salt_pos].salt_buf[3];
-  data[2] = salt_bufs[salt_pos].salt_buf[4];
-  data[3] = salt_bufs[salt_pos].salt_buf[5];
+  data[0] = salt_bufs[SALT_POS].salt_buf[2];
+  data[1] = salt_bufs[SALT_POS].salt_buf[3];
+  data[2] = salt_bufs[SALT_POS].salt_buf[4];
+  data[3] = salt_bufs[SALT_POS].salt_buf[5];
 
   u32 out[4];
 
